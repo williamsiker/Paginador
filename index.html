@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda de Medicamentos</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" /> 
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+</head>
+<body>
+    <div class="busqueda">
+      <h1>Búsqueda de productos</h1>
+    <input type="text" id="search" placeholder="Buscar productos por boton">
+    <button id="searchBtn">Buscar</button>
+
+    
+    
+
+    <table id="tabla" class="display">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Precio</th>
+        </tr>
+      </thead>
+      
+      <tbody id="tablaBody">
+        <!-- Aquí se mostrarán los datos -->
+      </tbody>
+    </table>
+    </div>
+
+    <script>
+      //let table = new DataTable('#tabla')
+      $(document).ready(function(){
+        $('#searchBtn').on('click', function(){
+          var searchKeyword = $('#search').val();
+          if(searchKeyword !== ''){
+            $.ajax({
+              url: 'search.php',
+              type: 'POST',
+              data: {keyword: searchKeyword},
+              success: function(response){
+                console.log(response);
+                // Construir las filas del DataTable con los datos recibidos
+                var filas = '';
+                //var info = JSON.parse(response);
+                var info = response;
+                for (var i = 0; i < info.length; i++) {
+                  filas += '<tr>';
+                  filas += '<td>' + info[i].id + '</td>';
+                  filas += '<td>' + info[i].nombre + '</td>';
+                  filas += '<td>' + info[i].precio + '</td>';
+                  // Agrega más columnas según tu estructura de datos
+                  filas += '</tr>';
+                }
+                
+                // Actualizar el contenido del cuerpo de la tabla con las filas construidas
+                $('#tablaBody').html(filas);
+                
+                // Volver a inicializar el DataTable con los nuevos datos
+                $('#tabla').DataTable();
+              }
+            });
+          }
+        });
+      });
+
+      $(document).ready(function() {
+        $('#searchInput').keyup(function() {
+          var query = $(this).val();
+
+          // Realiza la solicitud AJAX
+          $.ajax({
+            url: 'query.php',
+            method: 'POST',
+            data: { query: query },
+            success: function(response) {
+              $('#searchResults').html(response);
+            }
+          });
+        });
+      });
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda de Medicamentos</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <style>
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+      
+        th, td {
+          padding: 8px;
+          text-align: left;
+          border-bottom: 1px solid #ddd;
+        }
+      
+        th {
+          background-color: #f2f2f2;
+        }
+      
+        tr:hover {
+          background-color: #f5f5f5;
+        }
+
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .button-primary {
+            background-color: #007BFF;
+        }
+
+        .numero1 {
+            padding: 10px;
+        }
+      </style>
+      
+</head>
+<body>
+    <h1>Busqueda Por evento Onkey</h1>
+    <div class="numero1">
+        <form>
+            <input type="text" id="searchInput" placeholder="Buscar por evento onkey">
+            <div id="searchResults"></div>
+          </form>
+    </div>
+
+    <button id='prevPage' class="button">Anterior</button>
+    <button id="nextPage" class="button">Siguiente</button>
+    
+
+    <script>
+      $(document).ready(function() {
+  var currentPage = 1;
+  var resultsPerPage = 5; // Número de resultados por página
+
+  $('#searchInput').keyup(function() {
+    currentPage = 1; // Restablecer la página actual cuando se realiza una búsqueda
+    loadResults(currentPage);
+  });
+
+  function loadResults(page) {
+    var query = $('#searchInput').val();
+
+    $.ajax({
+      url: 'query.php',
+      method: 'POST',
+      data: { query: query, page: page, resultsPerPage: resultsPerPage },
+      success: function(response) {
+        $('#searchResults').html(response);
+      }
+    });
+  }
+
+  // Navegar a la página anterior
+  $('#prevPage').click(function(e) {
+    e.preventDefault(); // Evitar el enlace predeterminado
+    if (currentPage > 1) {
+      currentPage--;
+      loadResults(currentPage);
+    }
+  });
+
+  // Navegar a la página siguiente
+  $('#nextPage').click(function(e) {
+    e.preventDefault(); // Evitar el enlace predeterminado
+    currentPage++;
+    loadResults(currentPage);
+  });
+});
+
+
+    </script>
+
+</body>
+</html>
